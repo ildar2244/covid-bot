@@ -1,6 +1,7 @@
 import express from 'express'
 import {Telegraf} from 'telegraf'
 import {PORT, TOKEN} from './config.js'
+import { getByCountry } from './services/api.js'
 
 const app = express()
 const BOT_TOKEN = process.env.BOT_TOKEN || TOKEN
@@ -21,6 +22,10 @@ bot.help(ctx => {
 })
 
 bot.hears(/.*/, async ctx => {
+    const apiResponse = await getByCountry(ctx.message.text)
+    if (apiResponse && apiResponse.data) {
+        console.log(apiResponse.data)
+    }
     return ctx.reply(`You said ${ctx.message.text}`)
 })
 
