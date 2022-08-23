@@ -2,6 +2,7 @@ import express from 'express'
 import {Telegraf} from 'telegraf'
 import {PORT, TOKEN} from './config.js'
 import { getByCountry } from './services/api.js'
+import { formatCountryMsg } from "./messages/country.js";
 
 const app = express()
 const BOT_TOKEN = process.env.BOT_TOKEN || TOKEN
@@ -22,11 +23,12 @@ bot.help(ctx => {
 })
 
 bot.hears(/.*/, async ctx => {
-    const apiResponse = await getByCountry(ctx.message.text)
-    if (apiResponse && apiResponse.data) {
-        console.log(apiResponse.data)
+    const {data} = await getByCountry(ctx.message.text)
+
+    if (data && data.results === 0) {
+        ctx.reply('Country not found. Try another')
     }
-    return ctx.reply(`You said ${ctx.message.text}`)
+    return ctx.replyWithMarkdown(formatCountryMsg(data.response[0]))
 })
 
 
