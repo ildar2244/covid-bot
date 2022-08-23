@@ -26,7 +26,7 @@ bot.hears(/.*/, async ctx => {
     const {data} = await getByCountry(ctx.message.text)
 
     if (data && data.results === 0) {
-        ctx.reply('Country not found. Try another')
+        return ctx.reply('Country not found. Try another')
     }
     return ctx.replyWithMarkdown(formatCountryMsg(data.response[0]))
 })
